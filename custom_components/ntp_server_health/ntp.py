@@ -1,5 +1,6 @@
 """NTP wire protocol and health policy; no Home Assistant dependencies."""
 from dataclasses import dataclass
+from datetime import datetime, timezone
 import socket
 import struct
 import time
@@ -18,6 +19,7 @@ class Result:
     leap: int | None = None
     version: int | None = None
     reference_id: str | None = None
+    server_time: datetime | None = None
 
 
 def query(host: str, timeout: float, warning_dispersion: float,
@@ -56,6 +58,12 @@ def query(host: str, timeout: float, warning_dispersion: float,
             raise ValueError(f'Stratum 0 / Kiss-o-Death: {reference_id}')
         if response[40:48] == bytes(8):
             raise ValueError('Missing NTP transmit timestamp')
+        transmit_seconds, transmit_fraction = struct.unpack_from('!II', response, 40)
+        # Unfold the 32-bit timestamp into the era nearest our request (2036 rollover).
+        transmit_seconds += round((now - transmit_seconds) / 2**32) * 2**32
+        server_time = datetime.fromtimestamp(
+            transmit_seconds - NTP_EPOCH + transmit_fraction / 2**32, timezone.utc,
+        )
         delay = struct.unpack_from('!i', response, 4)[0] / 65536.0
         dispersion = struct.unpack_from('!I', response, 8)[0] / 65536.0
         status, reason = 'OK', 'Within thresholds'
@@ -70,6 +78,6 @@ def query(host: str, timeout: float, warning_dispersion: float,
         elif dispersion >= warning_dispersion:
             status, reason = 'WARNING', 'Root dispersion'
         return Result(status, reason, remote, stratum, delay * 1000,
-                      dispersion * 1000, leap, version, reference_id)
+                      dispersion * 1000, leap, version, reference_id, server_time)
     except (OSError, ValueError) as err:
         return Result('CRITICAL', str(err))

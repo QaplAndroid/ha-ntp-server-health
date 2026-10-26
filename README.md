@@ -1,4 +1,4 @@
-# NTP Server Health 1.2.0
+# NTP Server Health 1.3.0
 
 Home Assistant custom integration for monitoring NTP server health over UDP.
 Configuration, editing, and JSON import/export use the Home Assistant GUI.
@@ -39,10 +39,10 @@ resolver timeout, independently of the socket timeout.
 Each configured server is a separate Home Assistant device. Open
 **Settings → Devices & services → NTP Server Health**, then select a server.
 Its native device page contains Root dispersion, Root delay, Stratum, Health,
-and Problem. Use **Add to dashboard** to add its entities to your own dashboard.
+Problem, and Server time. Use **Add to dashboard** to add its entities to your own dashboard.
 Device names and areas can be changed using Home Assistant's standard controls.
 
-When upgrading from GUI versions 1.0.0 or 1.1.0, update the integration files
+When upgrading from GUI versions 1.0.0, 1.1.0, or 1.2.0, update the integration files
 and restart Home Assistant. Do not delete and re-add the integration or import
 the configuration again: saved settings, existing entity IDs, and custom entity
 names are retained. Devices are created automatically for existing servers.
@@ -54,7 +54,7 @@ removes its device and entities without affecting the remaining servers.
 
 ## Sensors
 
-Each server has five entities:
+Each server has six entities:
 
 | Entity | Value |
 | --- | --- |
@@ -63,13 +63,14 @@ Each server has five entities:
 | Stratum | numeric stratum |
 | Health | `OK`, `WARNING`, or `CRITICAL` |
 | Problem | on for warnings, critical results, and communication failures |
+| Server time | timezone-aware timestamp from the server's NTP response |
 
 Example entity ID: `sensor.ntp_pool_ntp_org_root_dispersion`. Actual entity IDs
 may differ if a name is already taken or has been customized.
 Health attributes include the reason, remote address, leap indicator, NTP
 version, and hexadecimal reference ID.
 
-On a timeout, DNS failure, or invalid response, numeric sensors become
+On a timeout, DNS failure, or invalid response, numeric and server-time sensors become
 `unavailable` rather than reporting zero or keeping stale measurements. Health
 reports `CRITICAL`, and Problem is on. Valid responses restore measurements.
 A leap alarm or excessive stratum retains the available measurements with an alarm.
@@ -77,6 +78,23 @@ A leap alarm or excessive stratum retains the available measurements with an ala
 Root dispersion is the server's reported uncertainty relative to its reference
 source. It is not the measured clock offset between Home Assistant and the server.
 This integration does not change clocks or configure NTP synchronization.
+
+### Server time
+
+**Server time** is the transmit timestamp supplied by the NTP server, including
+fractional seconds, not a copy of Home Assistant's clock. It uses the same NTP
+request as the other measurements and refreshes at the configured polling interval.
+It is a snapshot of the last valid response, not a clock ticking every second.
+
+Home Assistant receives a UTC timestamp and formats it using its time-zone and
+display settings. A timestamp may be shown relatively; open the entity to inspect
+the exact time. Home Assistant stores timestamp sensor states at whole-second
+precision, for example `2026-10-26T12:34:56+00:00`. A failed poll makes it `unavailable` instead of
+retaining an old time. A valid response with a health warning still reports the
+server's time; check Health and Problem to decide whether the source is healthy.
+The NTP timestamp's 2036 era rollover is handled using the request's clock as the
+era reference.
+
 
 ## Aggregate problem group
 
@@ -184,6 +202,25 @@ prevent a manual web upload of a sensitive file. Review uploads explicitly.
 Deleting a sensitive file from the latest commit does not remove it from Git
 history. Publish sanitized files into a new repository without private history.
 
+## Publishing a new GitHub release
+
+1. Open the existing integration repository on GitHub and select its **Code** tab.
+2. In the repository root, select **Add file → Upload files**.
+3. Open the local `v1.3.0` folder and drag its **contents**, not the enclosing
+   `v1.3.0` folder, into the upload area. Upload only this public release folder,
+   never the parent project, private configuration, or Home Assistant's `.storage`.
+4. Check that the root contains `custom_components/ntp_server_health`,
+   `dashboard`, `tests`, `README.md`, `hacs.json`, and `.gitignore`.
+5. Enter commit message `Release 1.3.0` and commit the upload to `main`.
+6. Open **Releases → Draft a new release** (or **Create a new release**).
+7. Choose a new tag **v1.3.0**, target **main**, and title **NTP Server Health 1.3.0**.
+8. Describe the new Server time entity, leave **pre-release** disabled, and publish.
+   No manually created ZIP or release attachment is needed.
+9. In Home Assistant, refresh the repository information in HACS, install/update
+   **NTP Server Health** to **1.3.0**, and restart Home Assistant.
+10. Open a server device and check its new **Server time** entity. Existing settings
+    and entity IDs are retained; do not remove the integration or re-import settings.
+
 ## Development
 
 From the repository root:
@@ -217,7 +254,24 @@ the aggregate device-independent, and removed only the deleted server's device
 and entities on options reload. A real frontend browser run confirmed the
 integration's device list and the server's native page with all five entities.
 
+Version 1.3.0 passed 29 tests, including loopback replies whose server time
+differs from the client clock, fractional seconds, invalid responses, timeouts,
+and both sides of the 2036 era boundary. A live `pool.ntp.org` query returned
+a UTC transmit time. Native HA Core 2026.10.4 upgrade verification preserved
+the six pre-existing entity IDs and custom Health name, added the sixth
+per-server entity, and checked its unavailable/recovery behavior and persistence
+through reload. Browser verification confirmed Server time on the device page
+and the absolute local date/time in its entity details.
+
 ## Changelog
+
+### 1.3.0
+
+- Add a Server time timestamp entity to every server device.
+- Decode the server's transmit time with UTC timezone and fractional seconds.
+- Handle the 2036 NTP era rollover without interpreting the time as 1900.
+- Share the existing polling request and mark failed time readings unavailable.
+- Retain all existing entities, devices, configuration, and aggregate behavior.
 
 ### 1.2.0
 

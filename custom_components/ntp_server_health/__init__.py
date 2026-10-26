@@ -45,7 +45,8 @@ async def async_setup_entry(hass, entry):
     # Removed hosts must not leave orphaned entities in the registry.
     expected = {
         f'{host}_{metric}' for host in coordinators
-        for metric in ('root_dispersion_ms', 'root_delay_ms', 'stratum', 'status', 'problem')
+        for metric in ('root_dispersion_ms', 'root_delay_ms', 'stratum', 'status',
+                       'problem', 'server_time')
     }
     expected.add(AGGREGATE_UNIQUE_ID)
     registry = er.async_get(hass)

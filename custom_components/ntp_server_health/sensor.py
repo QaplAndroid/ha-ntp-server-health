@@ -1,5 +1,5 @@
-"""NTP numeric measurements and health state."""
-from homeassistant.components.sensor import SensorEntity, SensorStateClass
+"""NTP measurements, server time, and health state."""
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity, SensorStateClass
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -10,6 +10,7 @@ METRICS = {
     'root_delay_ms': ('Root delay', 'ms', 'mdi:timer-outline'),
     'stratum': ('Stratum', None, 'mdi:layers-outline'),
     'status': ('Health', None, 'mdi:server-security'),
+    'server_time': ('Server time', None, 'mdi:clock-outline'),
 }
 
 
@@ -40,6 +41,8 @@ class NtpSensor(CoordinatorEntity, SensorEntity):
         self._attr_icon = icon
         if unit is not None:
             self._attr_state_class = SensorStateClass.MEASUREMENT
+        if metric == 'server_time':
+            self._attr_device_class = SensorDeviceClass.TIMESTAMP
 
     @property
     def available(self):
