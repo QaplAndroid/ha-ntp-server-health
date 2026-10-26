@@ -1,4 +1,4 @@
-# NTP Server Health 1.1.0
+# NTP Server Health 1.2.0
 
 Home Assistant custom integration for monitoring NTP server health over UDP.
 Configuration, editing, and JSON import/export use the Home Assistant GUI.
@@ -33,6 +33,24 @@ Entity unique IDs for unchanged server names are preserved.
 The Home Assistant host needs network access to UDP port 123 on each server,
 and working DNS for hostnames. Hostname lookups use the operating system's
 resolver timeout, independently of the socket timeout.
+
+## Devices and upgrades
+
+Each configured server is a separate Home Assistant device. Open
+**Settings → Devices & services → NTP Server Health**, then select a server.
+Its native device page contains Root dispersion, Root delay, Stratum, Health,
+and Problem. Use **Add to dashboard** to add its entities to your own dashboard.
+Device names and areas can be changed using Home Assistant's standard controls.
+
+When upgrading from GUI versions 1.0.0 or 1.1.0, update the integration files
+and restart Home Assistant. Do not delete and re-add the integration or import
+the configuration again: saved settings, existing entity IDs, and custom entity
+names are retained. Devices are created automatically for existing servers.
+Server names must remain unchanged to retain their existing identities.
+
+The all-server Problem aggregate remains integration-wide and is not assigned
+to an individual server device. Removing a server in the integration's options
+removes its device and entities without affecting the remaining servers.
 
 ## Sensors
 
@@ -192,7 +210,22 @@ recovery, member entity renames, and listener cleanup on unload were checked.
 The status card template rendered a valid Markdown table against those real HA states.
 Full browser rendering of the dashboard cards on a user's HA instance is not verified.
 
+Version 1.2.0 was exercised on native HA Core 2026.10.4 across separate legacy
+and upgraded processes with persistent registries. The upgrade preserved entity
+IDs and custom names, linked exactly five entities to each server device, kept
+the aggregate device-independent, and removed only the deleted server's device
+and entities on options reload. A real frontend browser run confirmed the
+integration's device list and the server's native page with all five entities.
+
 ## Changelog
+
+### 1.2.0
+
+- Represent each NTP server as a separate device with its five existing entities.
+- Show short entity labels on the native device page; retain existing unique IDs.
+- Preserve saved configuration, entity IDs, custom entity names, and device names.
+- Remove obsolete server devices when configuration changes.
+- Keep the all-server Problem aggregate independent of individual server devices.
 
 ### 1.1.0
 

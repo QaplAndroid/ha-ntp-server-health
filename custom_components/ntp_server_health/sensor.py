@@ -1,6 +1,9 @@
 """NTP numeric measurements and health state."""
 from homeassistant.components.sensor import SensorEntity, SensorStateClass
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+
+from .settings import DOMAIN
 
 METRICS = {
     'root_dispersion_ms': ('Root dispersion', 'ms', 'mdi:timer-alert-outline'),
@@ -22,12 +25,17 @@ async def async_setup_entry(hass, entry, async_add_entities):
 class NtpSensor(CoordinatorEntity, SensorEntity):
     """One value from one shared NTP query."""
 
+    _attr_has_entity_name = True
+
     def __init__(self, coordinator, host, metric):
         super().__init__(coordinator)
         label, unit, icon = METRICS[metric]
         self._metric = metric
-        self._attr_name = f'NTP {host} {label}'
+        self._attr_name = label
         self._attr_unique_id = f'{host}_{metric}'
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, host)}, name=f'NTP {host}', model='NTP server',
+        )
         self._attr_native_unit_of_measurement = unit
         self._attr_icon = icon
         if unit is not None:

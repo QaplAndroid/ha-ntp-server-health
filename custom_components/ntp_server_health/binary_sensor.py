@@ -2,6 +2,7 @@
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass, BinarySensorEntity
 from homeassistant.core import callback
 from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .health import AGGREGATE_UNIQUE_ID, summarize_health
@@ -20,11 +21,15 @@ class NtpProblem(CoordinatorEntity, BinarySensorEntity):
     """Mark warnings, critical results and communication failures as problems."""
 
     _attr_device_class = BinarySensorDeviceClass.PROBLEM
+    _attr_has_entity_name = True
 
     def __init__(self, coordinator, host):
         super().__init__(coordinator)
-        self._attr_name = f'NTP {host} Problem'
+        self._attr_name = 'Problem'
         self._attr_unique_id = f'{host}_problem'
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, host)}, name=f'NTP {host}', model='NTP server',
+        )
 
     @property
     def available(self):

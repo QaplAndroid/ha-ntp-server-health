@@ -5,7 +5,7 @@ from functools import partial
 import logging
 
 from homeassistant.const import Platform
-from homeassistant.helpers import config_validation as cv, entity_registry as er
+from homeassistant.helpers import config_validation as cv, device_registry as dr, entity_registry as er
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .health import AGGREGATE_UNIQUE_ID
@@ -52,6 +52,13 @@ async def async_setup_entry(hass, entry):
     for entity in er.async_entries_for_config_entry(registry, entry.entry_id):
         if entity.unique_id not in expected:
             registry.async_remove(entity.entity_id)
+    device_registry = dr.async_get(hass)
+    active_devices = {(DOMAIN, host) for host in coordinators}
+    for device in dr.async_entries_for_config_entry(device_registry, entry.entry_id):
+        if any(domain == DOMAIN for domain, _ in device.identifiers) and not (
+            device.identifiers & active_devices
+        ):
+            device_registry.async_remove_device(device.id)
     return True
 
 
