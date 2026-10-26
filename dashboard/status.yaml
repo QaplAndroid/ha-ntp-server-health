@@ -1,0 +1,35 @@
+type: markdown
+content: |
+  {% set group = 'binary_sensor.ntp_server_health_problem' %}
+  {% set problems = state_attr(group, 'problems') or [] %}
+  {% set total = state_attr(group, 'server_count') | int(0) %}
+  {% if states(group) in ['unknown', 'unavailable'] %}
+  ## NTP nadzor nije dostupan
+  Zbirni senzor ne postoji ili nije dostupan. Provjeri integraciju i ID entiteta.
+  {% elif total == 0 %}
+  ## NTP problem: nema konfiguriranih servera
+  {% elif is_state(group, 'off') %}
+  ## NTP serveri: svi su OK ({{ total }})
+  {% else %}
+  ## NTP problemi: {{ problems | count }} / {{ total }}
+
+  | Server | Stanje | Razlog | Dispersion (ms) | Stratum | Promjena stanja |
+  | :--- | :--- | :--- | ---: | ---: | :--- |
+  {% for problem in problems -%}
+  {% set entity = states[problem.health_entity_id] if problem.health_entity_id else none -%}
+  | {{ problem.server | e }} | {{ problem.status | e }} | {{ problem.reason | replace('\n', ' ') | e | replace('|', '&#124;') }} | {{ problem.root_dispersion_ms | round(3) if problem.root_dispersion_ms is not none else 'N/A' }} | {{ problem.stratum if problem.stratum is not none else 'N/A' }} | {{ as_local(entity.last_changed).strftime('%Y-%m-%d %H:%M:%S') if entity is not none else 'N/A' }} |
+  {% endfor %}
+  {% endif %}
+grid_options:
+  columns: full
+  rows: auto
+card_mod:
+  style: |
+    ha-card {
+      {% if is_state('binary_sensor.ntp_server_health_problem', 'off') %}
+        --ha-card-background: #003c00;
+      {% else %}
+        --ha-card-background: #8b0000;
+      {% endif %}
+      color: white;
+    }

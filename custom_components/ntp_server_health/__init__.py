@@ -8,6 +8,7 @@ from homeassistant.const import Platform
 from homeassistant.helpers import config_validation as cv, entity_registry as er
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
+from .health import AGGREGATE_UNIQUE_ID
 from .ntp import query
 from .settings import DOMAIN, normalize_settings
 
@@ -46,6 +47,7 @@ async def async_setup_entry(hass, entry):
         f'{host}_{metric}' for host in coordinators
         for metric in ('root_dispersion_ms', 'root_delay_ms', 'stratum', 'status', 'problem')
     }
+    expected.add(AGGREGATE_UNIQUE_ID)
     registry = er.async_get(hass)
     for entity in er.async_entries_for_config_entry(registry, entry.entry_id):
         if entity.unique_id not in expected:

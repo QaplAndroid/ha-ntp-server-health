@@ -1,0 +1,11 @@
+type: custom:auto-entities
+card:
+  type: logbook
+  hours_to_show: 48
+filter:
+  include:
+    - entity_id: binary_sensor.ntp_server_health_problem
+    - group: binary_sensor.ntp_server_health_problem
+grid_options:
+  columns: full
+  rows: 7
