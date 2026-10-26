@@ -1,0 +1,122 @@
+{
+  "title": "Nadzor NTP poslužitelja",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Način konfiguriranja",
+        "description": "Svi NTP poslužitelji konfiguriraju se zajedno. Moguće je dodati samo jednu instancu ove integracije.",
+        "menu_options": {
+          "settings": "Ručno unesi postavke",
+          "import_config": "Uvezi JSON konfiguraciju"
+        }
+      },
+      "settings": {
+        "title": "Postavke nadzora NTP poslužitelja",
+        "description": "Pragovi korijenske disperzije izraženi su u sekundama, a ne u milisekundama. Pragovi upozorenja moraju biti niži od kritičnih pragova.",
+        "data": {
+          "servers": "NTP poslužitelji",
+          "scan_interval": "Interval provjere (sekunde)",
+          "timeout": "Vrijeme čekanja odgovora (sekunde)",
+          "warning_dispersion": "Korijenska disperzija za upozorenje (sekunde)",
+          "critical_dispersion": "Kritična korijenska disperzija (sekunde)",
+          "warning_stratum": "Prag stratuma za upozorenje",
+          "critical_stratum": "Kritični prag stratuma"
+        },
+        "data_description": {
+          "servers": "Jedan naziv računala ili IP adresa po retku. Nemojte unositi URL-ove, putanje ni brojeve portova. Okolne bjeline uklanjaju se, nazivi se pretvaraju u mala slova, a duplikati nisu dopušteni.",
+          "scan_interval": "Cijeli broj sekundi između provjera, najmanje 10.",
+          "timeout": "Broj sekundi čekanja odgovora svakog poslužitelja, od 0,1 do 30.",
+          "warning_dispersion": "Upozorenje se prikazuje kada korijenska disperzija dosegne ovu vrijednost u sekundama. Mora biti najmanje 0 i niža od kritične vrijednosti.",
+          "critical_dispersion": "Kritično stanje prikazuje se kada korijenska disperzija dosegne ovu vrijednost u sekundama. Mora biti viša od vrijednosti za upozorenje.",
+          "warning_stratum": "Upozorenje se prikazuje kada stratum poslužitelja premaši ovaj cijeli broj od 1 do 15. Mora biti niži od kritičnog praga.",
+          "critical_stratum": "Kritično stanje prikazuje se kada stratum poslužitelja premaši ovaj cijeli broj od 1 do 15. Mora biti viši od praga za upozorenje."
+        }
+      },
+      "import_config": {
+        "title": "Uvoz JSON konfiguracije",
+        "description": "Zalijepite cjelovit JSON izvoz integracije Nadzor NTP poslužitelja (format ntp_server_health, verzija 1). Obavezno je svih sedam postavki. Neispravan JSON ili neispravne postavke neće se spremiti.",
+        "data": {"configuration": "JSON konfiguracija"},
+        "data_description": {"configuration": "Zalijepite cijeli dokument, uključujući ključeve format, version i settings."}
+      }
+    },
+    "error": {
+      "invalid_settings": "Postavke moraju biti JSON objekt.",
+      "unknown_settings": "Nepoznate postavke nisu dopuštene. Upotrijebite samo sedam dokumentiranih postavki.",
+      "missing_settings": "Uvezene postavke moraju sadržavati svih sedam postavki, uključujući popis poslužitelja.",
+      "invalid_servers": "Unesite barem jedan valjan naziv računala ili IP adresu. Nemojte unositi prazne stavke, URL-ove, putanje, brojeve portova ni bjeline unutar naziva.",
+      "duplicate_servers": "Svaki poslužitelj mora biti jedinstven nakon uklanjanja okolnih bjelina i pretvaranja u mala slova.",
+      "invalid_number": "Unesite konačne brojeve, a ne logičke vrijednosti ili tekst. Interval provjere i pragovi stratuma moraju biti cijeli brojevi.",
+      "out_of_range": "Interval provjere mora biti najmanje 10 sekundi, vrijeme čekanja od 0,1 do 30 sekundi, pragovi disperzije nenegativni, a pragovi stratuma od 1 do 15.",
+      "dispersion_order": "Disperzija za upozorenje mora biti strogo niža od kritične disperzije.",
+      "stratum_order": "Stratum za upozorenje mora biti strogo niži od kritičnog stratuma.",
+      "invalid_json": "Zalijepite valjan JSON bez ponovljenih ključeva u objektima.",
+      "invalid_format": "JSON mora sadržavati točno ključeve format, version i settings, uz vrijednost ntp_server_health za format.",
+      "unsupported_version": "Podržana je samo verzija 1 JSON konfiguracije."
+    },
+    "abort": {
+      "single_instance_allowed": "Dopuštena je samo jedna instanca integracije Nadzor NTP poslužitelja. Za promjenu postavki ili uvoz JSON-a odaberite Konfiguriraj na postojećoj integraciji.",
+      "already_configured": "Nadzor NTP poslužitelja već je konfiguriran. Odaberite Konfiguriraj na postojećoj integraciji."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Upravljanje NTP konfiguracijom",
+        "description": "Uredite postavke ili ih zamijenite uvezenim JSON dokumentom. Izvoz samo prikazuje trenutačnu konfiguraciju i ne sprema promjene niti ponovno učitava integraciju.",
+        "menu_options": {
+          "settings": "Uredi postavke",
+          "import_config": "Uvezi JSON konfiguraciju",
+          "export_config": "Izvezi JSON konfiguraciju"
+        }
+      },
+      "settings": {
+        "title": "Postavke nadzora NTP poslužitelja",
+        "description": "Spremanje zamjenjuje sve postavke i ponovno učitava nadzor. Pragovi korijenske disperzije izraženi su u sekundama, a ne u milisekundama. Pragovi upozorenja moraju biti niži od kritičnih pragova.",
+        "data": {
+          "servers": "NTP poslužitelji",
+          "scan_interval": "Interval provjere (sekunde)",
+          "timeout": "Vrijeme čekanja odgovora (sekunde)",
+          "warning_dispersion": "Korijenska disperzija za upozorenje (sekunde)",
+          "critical_dispersion": "Kritična korijenska disperzija (sekunde)",
+          "warning_stratum": "Prag stratuma za upozorenje",
+          "critical_stratum": "Kritični prag stratuma"
+        },
+        "data_description": {
+          "servers": "Jedan naziv računala ili IP adresa po retku. Nemojte unositi URL-ove, putanje ni brojeve portova. Okolne bjeline uklanjaju se, nazivi se pretvaraju u mala slova, a duplikati nisu dopušteni.",
+          "scan_interval": "Cijeli broj sekundi između provjera, najmanje 10.",
+          "timeout": "Broj sekundi čekanja odgovora svakog poslužitelja, od 0,1 do 30.",
+          "warning_dispersion": "Upozorenje se prikazuje kada korijenska disperzija dosegne ovu vrijednost u sekundama. Mora biti najmanje 0 i niža od kritične vrijednosti.",
+          "critical_dispersion": "Kritično stanje prikazuje se kada korijenska disperzija dosegne ovu vrijednost u sekundama. Mora biti viša od vrijednosti za upozorenje.",
+          "warning_stratum": "Upozorenje se prikazuje kada stratum poslužitelja premaši ovaj cijeli broj od 1 do 15. Mora biti niži od kritičnog praga.",
+          "critical_stratum": "Kritično stanje prikazuje se kada stratum poslužitelja premaši ovaj cijeli broj od 1 do 15. Mora biti viši od praga za upozorenje."
+        }
+      },
+      "import_config": {
+        "title": "Uvoz JSON konfiguracije",
+        "description": "Zalijepite cjelovit izvoz verzije 1. Valjan uvoz zamjenjuje sve trenutačne postavke i ponovno učitava nadzor. Neispravan unos ne mijenja trenutačnu konfiguraciju.",
+        "data": {"configuration": "JSON konfiguracija"},
+        "data_description": {"configuration": "Zalijepite cijeli dokument, uključujući ključeve format, version i svih sedam postavki u objektu settings."}
+      },
+      "export_config": {
+        "title": "Kopiranje JSON konfiguracije",
+        "description": "Odaberite i kopirajte cijeli JSON dokument u nastavku. Sačuvajte ga kao sigurnosnu kopiju ili ga zalijepite u Uvoz JSON konfiguracije. Dalje vraća izbornik bez spremanja i ponovnog učitavanja. Uređivanje ovog teksta ne mijenja konfiguraciju.",
+        "data": {"configuration": "JSON konfiguracija"},
+        "data_description": {"configuration": "Kopirajte ovaj cjelovit dokument verzije 1. Datoteka se ne preuzima."}
+      }
+    },
+    "error": {
+      "invalid_settings": "Postavke moraju biti JSON objekt.",
+      "unknown_settings": "Nepoznate postavke nisu dopuštene. Upotrijebite samo sedam dokumentiranih postavki.",
+      "missing_settings": "Uvezene postavke moraju sadržavati svih sedam postavki, uključujući popis poslužitelja.",
+      "invalid_servers": "Unesite barem jedan valjan naziv računala ili IP adresu. Nemojte unositi prazne stavke, URL-ove, putanje, brojeve portova ni bjeline unutar naziva.",
+      "duplicate_servers": "Svaki poslužitelj mora biti jedinstven nakon uklanjanja okolnih bjelina i pretvaranja u mala slova.",
+      "invalid_number": "Unesite konačne brojeve, a ne logičke vrijednosti ili tekst. Interval provjere i pragovi stratuma moraju biti cijeli brojevi.",
+      "out_of_range": "Interval provjere mora biti najmanje 10 sekundi, vrijeme čekanja od 0,1 do 30 sekundi, pragovi disperzije nenegativni, a pragovi stratuma od 1 do 15.",
+      "dispersion_order": "Disperzija za upozorenje mora biti strogo niža od kritične disperzije.",
+      "stratum_order": "Stratum za upozorenje mora biti strogo niži od kritičnog stratuma.",
+      "invalid_json": "Zalijepite valjan JSON bez ponovljenih ključeva u objektima.",
+      "invalid_format": "JSON mora sadržavati točno ključeve format, version i settings, uz vrijednost ntp_server_health za format.",
+      "unsupported_version": "Podržana je samo verzija 1 JSON konfiguracije."
+    }
+  }
+}

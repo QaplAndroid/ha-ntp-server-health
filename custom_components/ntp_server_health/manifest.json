@@ -1,0 +1,13 @@
+{
+  "domain": "ntp_server_health",
+  "name": "NTP Server Health",
+  "codeowners": ["@QaplAndroid"],
+  "config_flow": true,
+  "documentation": "https://github.com/QaplAndroid/ha-ntp-server-health",
+  "integration_type": "service",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/QaplAndroid/ha-ntp-server-health/issues",
+  "requirements": [],
+  "single_config_entry": true,
+  "version": "1.0.0"
+}

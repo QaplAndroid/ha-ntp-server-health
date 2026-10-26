@@ -1,0 +1,122 @@
+{
+  "title": "NTP Server Health",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configuration method",
+        "description": "Configure all NTP servers together. Only one instance of this integration can be added.",
+        "menu_options": {
+          "settings": "Enter settings manually",
+          "import_config": "Import JSON configuration"
+        }
+      },
+      "settings": {
+        "title": "NTP monitoring settings",
+        "description": "Dispersion thresholds are in seconds, not milliseconds. Warning thresholds must be lower than critical thresholds.",
+        "data": {
+          "servers": "NTP servers",
+          "scan_interval": "Polling interval (seconds)",
+          "timeout": "Request timeout (seconds)",
+          "warning_dispersion": "Warning root dispersion (seconds)",
+          "critical_dispersion": "Critical root dispersion (seconds)",
+          "warning_stratum": "Warning stratum threshold",
+          "critical_stratum": "Critical stratum threshold"
+        },
+        "data_description": {
+          "servers": "One hostname or IP address per line. Do not include URLs, paths, or port numbers. Server names are trimmed and converted to lowercase; duplicates are not allowed.",
+          "scan_interval": "Whole seconds between polls, at least 10.",
+          "timeout": "Seconds to wait for each server, from 0.1 to 30.",
+          "warning_dispersion": "Warn when root dispersion reaches this value, in seconds. Must be at least 0 and below the critical value.",
+          "critical_dispersion": "Report critical when root dispersion reaches this value, in seconds. Must be above the warning value.",
+          "warning_stratum": "Warn when the server stratum exceeds this integer, from 1 to 15. Must be below the critical threshold.",
+          "critical_stratum": "Report critical when the server stratum exceeds this integer, from 1 to 15. Must be above the warning threshold."
+        }
+      },
+      "import_config": {
+        "title": "Import JSON configuration",
+        "description": "Paste a complete NTP Server Health JSON export (format ntp_server_health, version 1). All seven settings are required. Invalid JSON or settings will not be saved.",
+        "data": {"configuration": "JSON configuration"},
+        "data_description": {"configuration": "Paste the entire document, including format, version, and settings."}
+      }
+    },
+    "error": {
+      "invalid_settings": "Settings must be a JSON object.",
+      "unknown_settings": "Unknown settings are not allowed. Use only the seven documented settings.",
+      "missing_settings": "The imported settings must include all seven settings, including the server list.",
+      "invalid_servers": "Enter at least one valid hostname or IP address. Do not include blank entries, URLs, paths, port numbers, or whitespace inside a host.",
+      "duplicate_servers": "Each server must be unique after trimming whitespace and converting to lowercase.",
+      "invalid_number": "Enter finite numbers, not booleans or text. Polling interval and stratum thresholds must be whole numbers.",
+      "out_of_range": "Use a polling interval of at least 10 seconds, a timeout from 0.1 to 30 seconds, nonnegative dispersion thresholds, and stratum thresholds from 1 to 15.",
+      "dispersion_order": "The warning dispersion must be strictly below the critical dispersion.",
+      "stratum_order": "The warning stratum must be strictly below the critical stratum.",
+      "invalid_json": "Paste valid JSON without duplicate object keys.",
+      "invalid_format": "The JSON must contain exactly format, version, and settings, with format set to ntp_server_health.",
+      "unsupported_version": "Only JSON configuration version 1 is supported."
+    },
+    "abort": {
+      "single_instance_allowed": "Only one NTP Server Health instance is allowed. Use Configure on the existing integration to change its settings or import JSON.",
+      "already_configured": "NTP Server Health is already configured. Use Configure on the existing integration."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Manage NTP configuration",
+        "description": "Edit settings or replace them with an imported JSON document. Export only displays the current configuration and does not save changes or reload the integration.",
+        "menu_options": {
+          "settings": "Edit settings",
+          "import_config": "Import JSON configuration",
+          "export_config": "Export JSON configuration"
+        }
+      },
+      "settings": {
+        "title": "NTP monitoring settings",
+        "description": "Saving replaces all settings and reloads monitoring. Dispersion thresholds are in seconds, not milliseconds. Warning thresholds must be lower than critical thresholds.",
+        "data": {
+          "servers": "NTP servers",
+          "scan_interval": "Polling interval (seconds)",
+          "timeout": "Request timeout (seconds)",
+          "warning_dispersion": "Warning root dispersion (seconds)",
+          "critical_dispersion": "Critical root dispersion (seconds)",
+          "warning_stratum": "Warning stratum threshold",
+          "critical_stratum": "Critical stratum threshold"
+        },
+        "data_description": {
+          "servers": "One hostname or IP address per line. Do not include URLs, paths, or port numbers. Server names are trimmed and converted to lowercase; duplicates are not allowed.",
+          "scan_interval": "Whole seconds between polls, at least 10.",
+          "timeout": "Seconds to wait for each server, from 0.1 to 30.",
+          "warning_dispersion": "Warn when root dispersion reaches this value, in seconds. Must be at least 0 and below the critical value.",
+          "critical_dispersion": "Report critical when root dispersion reaches this value, in seconds. Must be above the warning value.",
+          "warning_stratum": "Warn when the server stratum exceeds this integer, from 1 to 15. Must be below the critical threshold.",
+          "critical_stratum": "Report critical when the server stratum exceeds this integer, from 1 to 15. Must be above the warning threshold."
+        }
+      },
+      "import_config": {
+        "title": "Import JSON configuration",
+        "description": "Paste a complete version 1 export. A valid import replaces all current settings and reloads monitoring. Invalid input leaves the current configuration unchanged.",
+        "data": {"configuration": "JSON configuration"},
+        "data_description": {"configuration": "Paste the entire document, including format, version, and all seven settings."}
+      },
+      "export_config": {
+        "title": "Copy JSON configuration",
+        "description": "Select and copy the entire JSON document below. Keep it as a backup or paste it into Import JSON configuration. Next returns to the menu without saving or reloading. Editing this text does not change the configuration.",
+        "data": {"configuration": "JSON configuration"},
+        "data_description": {"configuration": "Copy this complete version 1 document. No file is downloaded."}
+      }
+    },
+    "error": {
+      "invalid_settings": "Settings must be a JSON object.",
+      "unknown_settings": "Unknown settings are not allowed. Use only the seven documented settings.",
+      "missing_settings": "The imported settings must include all seven settings, including the server list.",
+      "invalid_servers": "Enter at least one valid hostname or IP address. Do not include blank entries, URLs, paths, port numbers, or whitespace inside a host.",
+      "duplicate_servers": "Each server must be unique after trimming whitespace and converting to lowercase.",
+      "invalid_number": "Enter finite numbers, not booleans or text. Polling interval and stratum thresholds must be whole numbers.",
+      "out_of_range": "Use a polling interval of at least 10 seconds, a timeout from 0.1 to 30 seconds, nonnegative dispersion thresholds, and stratum thresholds from 1 to 15.",
+      "dispersion_order": "The warning dispersion must be strictly below the critical dispersion.",
+      "stratum_order": "The warning stratum must be strictly below the critical stratum.",
+      "invalid_json": "Paste valid JSON without duplicate object keys.",
+      "invalid_format": "The JSON must contain exactly format, version, and settings, with format set to ntp_server_health.",
+      "unsupported_version": "Only JSON configuration version 1 is supported."
+    }
+  }
+}
